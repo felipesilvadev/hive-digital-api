@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify';
+import { RowDataPacket } from 'mysql2';
 import { z } from 'zod';
 
 import { db } from '../database/db';
@@ -32,10 +33,29 @@ export async function logRoutes(app: FastifyInstance) {
     const { id_acao, link } = bodySchema.parse(request.body);
 
     try {
-      const [result] = await db.query(
+      await db.query(
         'INSERT INTO tab_log (id_acao, link) VALUES (?, ?)',
         [id_acao, link]
       );
+
+      const [result] = await db.query<RowDataPacket[]>(
+        'SELECT C.nome as campanha, A.descricao as acao FROM tab_campanha_acoes A INNER JOIN tab_campanhas C ON (C.id_campanha = A.id_campanha) WHERE A.id_campanha_acao = (?)',
+        [id_acao]
+      );
+
+      const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
+      const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+
+      const text = `💸 Din-din 💸 \n\n🆔 Campanha: ${result[0]?.campanha}\n🔗 Ação: ${result[0]?.acao}`;
+      await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHAT_ID,
+          text: text,
+          parse_mode: 'Markdown',
+        }),
+      });
 
       reply.code(201).send({
         message: 'Log inserido com sucesso',
