@@ -39,14 +39,20 @@ export async function logRoutes(app: FastifyInstance) {
       );
 
       const [result] = await db.query<RowDataPacket[]>(
-        'SELECT C.nome as campanha, A.descricao as acao FROM tab_campanha_acoes A INNER JOIN tab_campanhas C ON (C.id_campanha = A.id_campanha) WHERE A.id_campanha_acao = (?)',
+        'SELECT C.nome as campanha, A.descricao as acao, A.ordem FROM tab_campanha_acoes A INNER JOIN tab_campanhas C ON (C.id_campanha = A.id_campanha) WHERE A.id_campanha_acao = (?)',
         [id_acao]
       );
 
       const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
       const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-      const text = `💸 Din-din 💸 \n\n🆔 Campanha: ${result[0]?.campanha}\n🔗 Ação: ${result[0]?.acao}`;
+      const emojis = {
+        1: '😊',
+        2: '😎😎',
+        3: '🤑🤑🤑'
+      };
+
+      const text = `${result[0]?.ordem}. ${result[0]?.campanha} - ${result[0]?.acao} ${emojis[result[0]?.ordem as 1 | 2 | 3]}`;
       await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
