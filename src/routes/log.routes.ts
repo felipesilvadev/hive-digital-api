@@ -11,8 +11,11 @@ export async function logRoutes(app: FastifyInstance) {
     });
     const { id_campanha } = paramsSchema.parse(request.params);
 
-    const listActionsQuantityByCampaignUseCase = new ListActionsQuantityByCampaignUseCase();
-    const result = await listActionsQuantityByCampaignUseCase.execute({ id_campanha });
+    const listActionsQuantityByCampaignUseCase =
+      new ListActionsQuantityByCampaignUseCase();
+    const result = await listActionsQuantityByCampaignUseCase.execute({
+      id_campanha,
+    });
 
     reply.code(200).send({ data: result });
   });
@@ -20,7 +23,7 @@ export async function logRoutes(app: FastifyInstance) {
   app.post('/', async (request, reply) => {
     const bodySchema = z.object({
       id_acao: z.coerce.number(),
-      link: z.string().url()
+      link: z.string().url(),
     });
 
     const { id_acao, link } = bodySchema.parse(request.body);

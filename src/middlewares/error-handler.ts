@@ -5,7 +5,7 @@ import { AppError } from '../errors/app-error';
 export function globalErrorHandler(
   error: FastifyError,
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
   const isDev = process.env.NODE_ENV !== 'production';
 
@@ -15,7 +15,7 @@ export function globalErrorHandler(
   if (error instanceof ZodError) {
     return reply.status(400).send({
       message: 'Erro de validação',
-      errors: error.errors.map((err) => ({
+      errors: error.errors.map(err => ({
         path: err.path.join('.'),
         message: err.message,
       })),

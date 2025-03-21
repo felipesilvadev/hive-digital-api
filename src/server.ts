@@ -1,7 +1,7 @@
 import 'dotenv/config';
 
 import Fastify from 'fastify';
-import cors from '@fastify/cors'
+import cors from '@fastify/cors';
 
 import { globalErrorHandler } from './middlewares/error-handler';
 

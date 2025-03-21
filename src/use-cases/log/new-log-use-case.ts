@@ -1,8 +1,8 @@
-import { RowDataPacket } from "mysql2";
+import { RowDataPacket } from 'mysql2';
 
-import { env } from "../../env";
-import { db } from "../../database/db";
-import { AppError } from "../../errors/app-error";
+import { env } from '../../env';
+import { db } from '../../database/db';
+import { AppError } from '../../errors/app-error';
 
 type NewLogUseCaseRequest = {
   id_acao: number;
@@ -17,14 +17,14 @@ type QueryResult = RowDataPacket & {
 
 export class NewLogUseCase {
   async execute({ id_acao, link }: NewLogUseCaseRequest) {
-    await db.query(
-      'INSERT INTO tab_log (id_acao, link) VALUES (?, ?)',
-      [id_acao, link]
-    );
+    await db.query('INSERT INTO tab_log (id_acao, link) VALUES (?, ?)', [
+      id_acao,
+      link,
+    ]);
 
     const [rows] = await db.query<QueryResult[]>(
       'SELECT C.nome as campanha, A.descricao as acao, A.ordem FROM tab_campanha_acoes A INNER JOIN tab_campanhas C ON (C.id_campanha = A.id_campanha) WHERE A.id_campanha_acao = (?)',
-      [id_acao]
+      [id_acao],
     );
 
     if (!rows.length) {
@@ -36,7 +36,7 @@ export class NewLogUseCase {
       1: '😊',
       2: '😎😎',
       3: '🤑🤑🤑',
-      4: '👏🏻'
+      4: '👏🏻',
     };
 
     const text = `${rows[0].ordem}. ${rows[0].campanha} - ${rows[0].acao} ${emojis[rows[0].ordem]}`;
