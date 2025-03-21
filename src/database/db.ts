@@ -1,10 +1,10 @@
 import mysql from 'mysql2/promise';
 
 export const db = mysql.createPool({
-  host: 'db05.assesi.com.br',
-  user: 'mkt_0800_u',
-  password: 'C@a#156cAm@rA_32',
-  database: 'mkt_0800',
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
   waitForConnections: true,
   connectionLimit: 10,
 });
