@@ -9,7 +9,7 @@ import { registerRoutes } from './routes';
 
 const app = Fastify();
 app.register(cors, {
-  origin: 'https://testenet.com.br',
+  origin: ['https://testenet.com.br', 'https://gerandocpf.com.br'],
 });
 app.setErrorHandler(globalErrorHandler);
 
