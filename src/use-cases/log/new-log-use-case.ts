@@ -4,10 +4,10 @@ import { env } from '../../env';
 import { db } from '../../database/db';
 import { AppError } from '../../errors/app-error';
 
-type NewLogUseCaseRequest = {
+interface NewLogUseCaseRequest {
   id_acao: number;
   link: string;
-};
+}
 
 type QueryResult = RowDataPacket & {
   campanha: string;
@@ -17,13 +17,13 @@ type QueryResult = RowDataPacket & {
 
 export class NewLogUseCase {
   async execute({ id_acao, link }: NewLogUseCaseRequest) {
-    await db.query('INSERT INTO tab_log (id_acao, link) VALUES (?, ?)', [
-      id_acao,
-      link,
-    ]);
+    await db.query(
+      /*sql*/ `INSERT INTO tab_log (id_acao, link) VALUES (?, ?)`,
+      [id_acao, link],
+    );
 
     const [rows] = await db.query<QueryResult[]>(
-      'SELECT C.nome as campanha, A.descricao as acao, A.ordem FROM tab_campanha_acoes A INNER JOIN tab_campanhas C ON (C.id_campanha = A.id_campanha) WHERE A.id_campanha_acao = (?)',
+      /*sql*/ `SELECT C.nome as campanha, A.descricao as acao, A.ordem FROM tab_campanha_acoes A INNER JOIN tab_campanhas C ON (C.id_campanha = A.id_campanha) WHERE A.id_campanha_acao = (?)`,
       [id_acao],
     );
 

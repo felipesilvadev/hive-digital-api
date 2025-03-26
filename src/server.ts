@@ -2,6 +2,10 @@ import 'dotenv/config';
 
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import cookie from '@fastify/cookie';
+import fastifyJwt from '@fastify/jwt';
+
+import { env } from './env';
 
 import { globalErrorHandler } from './middlewares/error-handler';
 
@@ -9,7 +13,24 @@ import { registerRoutes } from './routes';
 
 const app = Fastify();
 app.register(cors, {
-  origin: ['https://testenet.com.br', 'https://gerandocpf.com.br'],
+  origin: [
+    'http://localhost:5173',
+    'https://dados.testenet.com.br',
+    'https://testenet.com.br',
+    'https://gerandocpf.com.br',
+  ],
+});
+app.register(cookie, {
+  secret: env.COOKIE_SECRET,
+  parseOptions: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    path: '/',
+  },
+});
+app.register(fastifyJwt, {
+  secret: env.JWT_SECRET,
 });
 app.setErrorHandler(globalErrorHandler);
 

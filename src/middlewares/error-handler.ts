@@ -15,10 +15,7 @@ export function globalErrorHandler(
   if (error instanceof ZodError) {
     return reply.status(400).send({
       message: 'Erro de validação',
-      errors: error.errors.map(err => ({
-        path: err.path.join('.'),
-        message: err.message,
-      })),
+      errors: error.format(),
     });
   }
 

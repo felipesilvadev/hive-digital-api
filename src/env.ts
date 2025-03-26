@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
+  COOKIE_SECRET: z.string(),
+  JWT_SECRET: z.string(),
   DB_HOST: z.string(),
   DB_USER: z.string(),
   DB_PASSWORD: z.string(),
