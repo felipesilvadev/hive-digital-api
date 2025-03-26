@@ -12,7 +12,7 @@ interface NewLogUseCaseRequest {
 type QueryResult = RowDataPacket & {
   campanha: string;
   acao: string;
-  ordem: 1 | 2 | 3 | 4;
+  ordem: number;
 };
 
 export class NewLogUseCase {
@@ -32,14 +32,8 @@ export class NewLogUseCase {
     }
 
     const { TELEGRAM_TOKEN, TELEGRAM_CHAT_ID } = env;
-    const emojis = {
-      1: '😊',
-      2: '😎😎',
-      3: '🤑🤑🤑',
-      4: '👏🏻',
-    };
 
-    const text = `${rows[0].ordem}. ${rows[0].campanha} - ${rows[0].acao} ${emojis[rows[0].ordem]}`;
+    const text = `${rows[0].ordem}. ${rows[0].campanha} - ${rows[0].acao}`;
     await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
