@@ -18,6 +18,7 @@ app.register(cors, {
     'https://dados.testenet.com.br',
     'https://testenet.com.br',
     'https://gerandocpf.com.br',
+    'https://qrcodegratuito.com.br',
   ],
 });
 app.register(cookie, {
