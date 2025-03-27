@@ -15,7 +15,7 @@ type QueryResult = RowDataPacket & {
 export class ListActionsQuantityByCampaignUseCase {
   async execute({ id_campanha }: ListActionsQuantityByCampaignUseCaseRequest) {
     const [rows] = await db.query<QueryResult[]>(
-      /*sql*/ `SELECT A.descricao, COUNT(L.id_log) as quantidade FROM tab_log L INNER JOIN tab_campanha_acoes A ON (A.id_campanha_acao = L.id_acao) WHERE A.id_campanha = ? AND A.dt_delete IS NULL GROUP BY L.id_acao ORDER BY A.ordem ASC`,
+      /*sql*/ `SELECT A.descricao, COUNT(L.id_log) as quantidade FROM tab_log L INNER JOIN tab_campanha_acoes A ON (A.id_campanha_acao = L.id_acao) WHERE DATE(L.dt_insert) = CURDATE() AND A.id_campanha = ? AND A.dt_delete IS NULL GROUP BY L.id_acao ORDER BY A.ordem ASC`,
       [id_campanha],
     );
 
