@@ -10,12 +10,18 @@ export async function logRoutes(app: FastifyInstance) {
     const paramsSchema = z.object({
       id_campanha: z.coerce.number(),
     });
+    const queySchema = z.object({
+      date: z.string().date().optional(),
+    });
+
     const { id_campanha } = paramsSchema.parse(request.params);
+    const { date } = queySchema.parse(request.query);
 
     const listActionsQuantityByCampaignUseCase =
       new ListActionsQuantityByCampaignUseCase();
     const result = await listActionsQuantityByCampaignUseCase.execute({
       id_campanha,
+      date,
     });
 
     reply.code(200).send({ data: result });

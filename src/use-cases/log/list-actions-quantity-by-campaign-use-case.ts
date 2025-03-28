@@ -5,6 +5,7 @@ import { AppError } from '../../errors/app-error';
 
 interface ListActionsQuantityByCampaignUseCaseRequest {
   id_campanha: number;
+  date: string | undefined;
 }
 
 type QueryResult = RowDataPacket & {
@@ -13,10 +14,15 @@ type QueryResult = RowDataPacket & {
 };
 
 export class ListActionsQuantityByCampaignUseCase {
-  async execute({ id_campanha }: ListActionsQuantityByCampaignUseCaseRequest) {
+  async execute({
+    id_campanha,
+    date,
+  }: ListActionsQuantityByCampaignUseCaseRequest) {
+    const filterDate = date ? date : new Date();
+
     const [rows] = await db.query<QueryResult[]>(
-      /*sql*/ `SELECT A.descricao, COUNT(L.id_log) as quantidade FROM tab_log L INNER JOIN tab_campanha_acoes A ON (A.id_campanha_acao = L.id_acao) WHERE DATE(L.dt_insert) = CURDATE() AND A.id_campanha = ? AND A.dt_delete IS NULL GROUP BY L.id_acao ORDER BY A.ordem ASC`,
-      [id_campanha],
+      /*sql*/ `SELECT A.descricao, COUNT(L.id_log) as quantidade FROM tab_log L INNER JOIN tab_campanha_acoes A ON (A.id_campanha_acao = L.id_acao) WHERE A.id_campanha = ? AND A.dt_delete IS NULL AND DATE(L.dt_insert) = DATE(?) GROUP BY L.id_acao ORDER BY A.ordem ASC`,
+      [id_campanha, filterDate],
     );
 
     if (!rows.length) {
