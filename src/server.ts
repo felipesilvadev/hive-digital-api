@@ -15,6 +15,7 @@ const app = Fastify();
 app.register(cors, {
   origin: [
     'http://localhost:5173',
+    'https://hivedigital.io',
     'https://dados.testenet.com.br',
     'https://testenet.com.br',
     'https://gerandocpf.com.br',
